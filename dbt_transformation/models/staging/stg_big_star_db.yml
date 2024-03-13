@@ -1,0 +1,35 @@
+# dbt_transformation/models/staging/stg_big_star_db.yml
+
+version: 2
+
+models:
+  - name: stg_customers
+    columns:
+      - name: customer_id
+        description: Unique id that identifies a customer
+        tests:
+          - unique
+          - not_null
+  - name: stg_orders
+    columns:
+      - name: order_id
+        tests:
+          - unique
+          - not_null
+      - name: order_status
+        tests:
+          - accepted_values:
+              values:
+                - created
+                - shipped
+                - approved
+                - canceled
+                - invoiced
+                - delivered
+                - processing
+                - unavailable
+      - name: customer_id
+        tests:
+          - relationships:
+              to: ref('stg_customers')
+              field: customer_id
